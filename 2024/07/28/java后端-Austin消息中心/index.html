@@ -1,0 +1,323 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>小邹的博客 | 小邹的博客</title><meta name="author" content="小邹"><meta name="copyright" content="小邹"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Austin消息中心消息中心系统架构: 1.首先有个接入层austin-api,是给技术业务方调用我们的接口然后去下发消息. 2.接入层收到请求后会把数据写入到消息队列MQ中去. 3.会有一个handle模块（逻辑层）,去消费消息队列中的数据.handle模块做的本质工作就是去下发消息.比如短信、邮件、push等等 4.这个平台不仅有技术的业务方还有运营这个角色会去使用。运营肯定不会以代码的方式去">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小邹的博客">
+<meta property="og:url" content="https://www.zoulifelogs.cn/2024/07/28/java%E5%90%8E%E7%AB%AF-Austin%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83/index.html">
+<meta property="og:site_name" content="小邹的博客">
+<meta property="og:description" content="Austin消息中心消息中心系统架构: 1.首先有个接入层austin-api,是给技术业务方调用我们的接口然后去下发消息. 2.接入层收到请求后会把数据写入到消息队列MQ中去. 3.会有一个handle模块（逻辑层）,去消费消息队列中的数据.handle模块做的本质工作就是去下发消息.比如短信、邮件、push等等 4.这个平台不仅有技术的业务方还有运营这个角色会去使用。运营肯定不会以代码的方式去">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://source.fomal.cc/img/default_cover_3.webp">
+<meta property="article:published_time" content="2024-07-28T12:26:36.003Z">
+<meta property="article:modified_time" content="2024-07-02T02:11:41.640Z">
+<meta property="article:author" content="小邹">
+<meta property="article:tag" content="运动">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://source.fomal.cc/img/default_cover_3.webp"><link rel="shortcut icon" href="https://www.fomal.cc/favicon.ico"><link rel="canonical" href="https://www.zoulifelogs.cn/2024/07/28/java%E5%90%8E%E7%AB%AF-Austin%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '小邹的博客',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-02 10:11:41'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-double-row-display@1.00/cardlistpost.min.css"/>
+<style>#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags:before {content:"\A";
+  white-space: pre;}#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags > .article-meta__separator{display:none}</style>
+<link rel="stylesheet" href="https://www.fomal.cc/static/css/runtime.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope-open"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://source.fomal.cc/img/default_cover_3.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="小邹的博客"><span class="site-name">小邹的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope-open"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-28T12:26:36.003Z" title="发表于 2024-07-28 20:26:36">2024-07-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-02T02:11:41.640Z" title="更新于 2024-07-02 10:11:41">2024-07-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Austin消息中心"><a href="#Austin消息中心" class="headerlink" title="Austin消息中心"></a>Austin消息中心</h1><h2 id="消息中心系统架构"><a href="#消息中心系统架构" class="headerlink" title="消息中心系统架构:"></a>消息中心系统架构:</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240630233133504.png" alt="image-20240630233133504"></p>
+<p>1.首先有个接入层austin-api,是给技术业务方调用我们的接口然后去下发消息.</p>
+<p>2.接入层收到请求后会把数据写入到消息队列MQ中去.</p>
+<p>3.会有一个handle模块（逻辑层）,去消费消息队列中的数据.handle模块做的本质工作就是去下发消息.比如短信、邮件、push等等</p>
+<p>4.这个平台不仅有技术的业务方还有运营这个角色会去使用。运营肯定不会以代码的方式去调用我们api层接口去下发消息，他需要通过消息管理平台的后台去下发消息。</p>
+<p>4.1运营首先要圈选收到消息的人群和指定发送消息的时间，这些都是通过后台去操作的，因为有指定时间，所以会有定时任务的一个模块（corn），等到指定的时间触发之后，corn模块就会调用（接入层）api层下发消息。</p>
+<p>目前有五个模块：后台管理模块，定时任务模块、接入层、逻辑层、实时流处理模块</p>
+<p>有两种角色：技术和运营</p>
+<p>无论是运营还是技术都会比较关心他的下发的消息的一个数据情况</p>
+<p>数据情况：用户是否收到、用户是否点击、被平台规则过滤导致用户没有收到。</p>
+<p>这些数据我们可以从接入层、逻辑层产出的日志中获取</p>
+<p>为了清洗这些日志数据，有个<strong>流处理模块stream</strong>，它会去清洗这些日志，会产生类似报表的数据，然后我们再将这些报表数据给到后台，然后运营和技术都可以通过后台去查看消息的一个整体下发的数据。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240630233213828.png" alt="image-20240630233213828"></p>
+<p><strong>总结</strong>：如果是实时的消息，技术侧直接调用接入层提供的接口去下发消息。</p>
+<p>​            运营侧通过消息管理的后台去圈选指定人群和时间去下发消息，因为有指定时间，所以会有定时任务这一模块，等接受到消息之后，通过发送MQ做一层异步的处理，会有个逻辑消费层去消费mq的数据，去下发不同渠道的消息（短信、企业微信、邮件等）。</p>
+<p>无论是运营还是技术，都希望知道消息下发的结果是咋样的，这些数据一般来源于消息的接入层和逻辑处理层。所以我们会在消息的接入层和逻辑处理层打相关的一些日志（关键链路日志），有了这些日志之后使用<strong>实时流处理模块</strong>（stream）清洗日志，然后洗出来的数据再给到消息管理平台的后台。技术方或者运营方就可以查看消息下发的整体情况是什么样的。</p>
+<h2 id="后台管理模块："><a href="#后台管理模块：" class="headerlink" title="后台管理模块："></a>后台管理模块：</h2><p>后台管理模块功能：前端+后台管理</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240630235205985.png" alt="image-20240630235205985"></p>
+<p>后台主要由两部分组成：对<strong>模版的管理</strong>和对<strong>数据的管理</strong></p>
+<p>无论是运营还是技术，想要在austin发送消息一定要在消息管理后台新建模板或者使用已有的模板，通过用户id、模板id去做消息的全链路追踪：比如说业务方通过这个模板发送了一批消息，我们可以追踪到这批消息的下发情况：比如下发量、到达量、点击量等等</p>
+<h2 id="技术栈："><a href="#技术栈：" class="headerlink" title="技术栈："></a>技术栈：</h2><p>1.Maven：项目管理工具、依赖包管理工具</p>
+<p>2.SpringBoot：1.约定大于配置、2.各种starter方便接入中间件、组件</p>
+<p>3.MySql：存储模板、短信发送记录</p>
+<p>4.SpringData JPA：作为ORM框架去连接MySQL，去读取MySql中的数据</p>
+<p>5.XXL-JOB：作为分布式定时任务框架：1.刷新token、2.下发运营指定时间 的消息、3.次日下发消息。</p>
+<p>6.Kafka:  1.作为消息队列：削峰、异步、解耦。2.下发日志3.接入层和逻辑层的解耦。</p>
+<p>7.Redis：存储：1.存储token 2.业务去重</p>
+<p>8.Apollo：分布式配置中心：1.限流值 2.流量配置值 3.账号信息</p>
+<p>9.Flink：实时计算引擎：清理日志</p>
+<p>10.Graylog：作为分布式日志框架：1.作为业务监控（在调用接口时打印日志，就能配置接口QPS监控、RT监控）2.日志检索（集中检索日志的地方，线上可能有多台机器，就不用每台机器上检索）</p>
+<p>11.prometheus+granfna：做系统监控</p>
+<p>12.docker+docker-compose：搭建部署环境</p>
+<h2 id="项目各个模块功能："><a href="#项目各个模块功能：" class="headerlink" title="项目各个模块功能："></a>项目各个模块功能：</h2><p>为什么要分多个模块？</p>
+<p>职责分明,好管理代码.austin有八个模块，在生产环境下很有可能把几个模块单独拎出来部署，比如说后台或者接入层单独拎出来部署，也就是说会有两个系统在线上跑，通过RPC进行交互。<strong>所以分模块也是为了后面扩展和部署。也可以针对某个模块去编译、测试、打包</strong>，<strong>代码的复用</strong>：假设我们将接入模块和后台管理模块分别在不同的机器上部署，那接入模块和后台模块所依赖的common包和support的包就可以直接以jar被依赖，就不用重写公共代码。</p>
+<p><strong>各个包的职责：</strong></p>
+<p>1.austin-common：一般用来放枚举，公共的类</p>
+<p>2.austin-api:接入层的接口</p>
+<p>3.austin-api-impl：接入层接口的实现</p>
+<p> 为什么区分这2和3两个模块：考虑以后可能会接入rpc，当接入rpc后只要提供api层的包给到业务方去用，业务方并不关心你的实现是怎么样的，那api层的依赖是很少的（业务方引入之后，自然就不太会有很多依赖冲突的问题）</p>
+<p>4.austin-support：对中间件的接入，可以理解为大utils包</p>
+<p>5.austin-stream：对flink的实时清洗</p>
+<p>6.austin-corn：主要就是定时任务逻辑（定时任务相关的都写在这）</p>
+<p>7.austin-handler：主要是逻辑层（下发消息、平台逻辑处理）</p>
+<p>8.austin-web：后台管理的接口</p>
+<p>Maven工程如何接入Springboot</p>
+<p>1.在父工程的Maven pom文件中去引入spring-boot-starter-parent这个依赖。</p>
+<p>我电脑里springboot版本是2.3.12</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701103421907.png" alt="image-20240701103421907"></p>
+<p>2.在web工程模块pom文件引入对应的spring-boot-starter-web以及对应的maven插件。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701104018060.png" alt="image-20240701104018060"></p>
+<p>3.写一个Maven（项目系统）的启动类</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701104131604.png" alt="image-20240701104131604"></p>
+<p>4.写一个简单的接口去测试，启动项目测试接口是否正常</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701104232754.png" alt="image-20240701104232754"></p>
+<h2 id="项目中用到的工具类和组件库"><a href="#项目中用到的工具类和组件库" class="headerlink" title="项目中用到的工具类和组件库"></a>项目中用到的工具类和组件库</h2><p>在平时开发的过程中总会看到项目中有utils这个包，这个包会封装我们各种常见的一些方法。我们自己不需要写这些utils，因为网上已经有很多开源的库，已经帮我们去实现了这些utils，我们自己写的没有人家开源的写得好。</p>
+<p>我们项目中使用了<strong>hutool和guava（瓜娃）工具包</strong>，另外我们在开发的过程中肯定会操作json，项目中用的是<strong>fastjson包</strong>。</p>
+<h2 id="Java日志"><a href="#Java日志" class="headerlink" title="Java日志"></a>Java日志</h2><p>线上环境打印日志的时候都要去用到java的日志框架</p>
+<p>jdbc：用java语言操作关系型数据库的一套Api。</p>
+<p>用的是logback作为日志框架是springboot里面内置的：引入logback.xml在资源文件里，然后去写上对应的日志配置。</p>
+<p>用@slf4j 注解  用log.info打印信息  引入lombok依赖</p>
+<p>我们可能会在程序关键的链路上打印对应的日志，然后这些日志会被拿去分析。</p>
+<p>在大数据的领域下，日志是不可或缺的一部分。</p>
+<h2 id="发送一条短信"><a href="#发送一条短信" class="headerlink" title="发送一条短信"></a>发送一条短信</h2><p>互联网中发送一条短信的流程：</p>
+<p>austin————-&gt;短信的服务提供商:比如华为，阿里，腾讯———&gt;运营商：移动、联通、电信。</p>
+<p>我们去对接短信服务商，然后短信服务商帮我们去对接运营商。</p>
+<p>在对接短信服务商的时候有两块需要去做：</p>
+<p>1.签名：让用户知道这条短信是谁下发的</p>
+<p>2.短信模板：短信服务商怕接入方乱发消息，做的安全措施</p>
+<p>pom文件中引入对应短信服务商的<strong>sdk</strong>，拷贝官方提供的代码，组装参数，就能成功发送短信。</p>
+<h2 id="推送平台需要解决的问题"><a href="#推送平台需要解决的问题" class="headerlink" title="推送平台需要解决的问题"></a>推送平台需要解决的问题</h2><p>1.业务方调用austin的接口发送短信的时候，austin给他返回success，但是用户并没有收到短信？</p>
+<p>平台下发短信的时候要把发短信的凭证给记录下来，基于短信渠道，我们在调用服务提供商的接口下发短信的时候，这个过程是异步的，意味着我们去调用服务商的接口，他会给我们返回success，只能说明调用是正常的，但不意味着用户收到了信息。所以说服务提供商会提供对应的接口给我们去拉取相对应的回执。这些回执才能知道这些用户有没有真正的收的到短信。</p>
+<p>解决方案:1.保存下发短信凭证   2.拉取对应的回执。  对这两数据做持久化，并且提供一个后台去给客服和业务方去自查下发的记录。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701222551714.png" alt="image-20240701222551714"></p>
+<ol start="2">
+<li><p>假如austin只对接了服务提供商腾讯短信,如果服务提供商网关挂了，是不是平台就无法发送消息了？</p>
+<p>作为消息推送平台，他需要接入多个短信服务商，为不同的渠道商配置不同的流量，如果有个渠道商挂了，可以动态的把流量推送给其他渠道商。</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701223113305.png" alt="image-20240701223113305" style="zoom:67%;" />
+
+<p>3.austin在渠道侧，每种渠道QPS有不同的限制，作为平台一定要有监控去监控接口QPS值，每个渠道下发的人数qps是多少。调用渠道接口的QPS是多少。</p>
+<p>通过监控页面来总的看这些指标。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:\Users\A\AppData\Roaming\Typora\typora-user-images\image-20240701223942386.png" alt="image-20240701223942386"></p>
+<p>4.用户收到短信，不知道是哪个业务发送的。平台会记录下发凭证，找到下发记录。消息推送平台的人如何知道是哪个业务方下发的呢？所以平台对外提供的接口需要有溯源的功能，溯源的手段就是通过模板。</p>
+</li>
+</ol>
+<p>​       QPS:每秒的请求数</p>
+<p>​        5.短信对账：我们统计成功发送短信的数量和服务商后台统计的数量进行对比。通过hive去统计下发的情况。</p>
+<p>​     6.业务方程序出现问题，连续调用多次，造成短信连续发送。平台要做一些去重相关的功能。（五分钟相同内容去重、一天最多n条记录）</p>
+<p>​     7. 引入一些中间件让系统扩展性变得更好。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://www.zoulifelogs.cn">小邹</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://www.zoulifelogs.cn/2024/07/28/java%E5%90%8E%E7%AB%AF-Austin%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83/">https://www.zoulifelogs.cn/2024/07/28/java%E5%90%8E%E7%AB%AF-Austin%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.zoulifelogs.cn" target="_blank">小邹的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://source.fomal.cc/img/default_cover_3.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/28/java%E5%90%8E%E7%AB%AF-Javaguide/" title=""><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://source.fomal.cc/img/default_cover_8.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2024/07/28/java%E5%90%8E%E7%AB%AF-ACM%E6%A8%A1%E6%9D%BF/" title=""><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://source.fomal.cc/img/default_cover_7.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">小邹</div><div class="author-info__description">生活博客</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zoujiahao22"><i class="fab fa-github"></i><span>/前往小家...</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/zoujiahao22/zoujiahao22.github.io" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:zoujiahao2022@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Austin%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83"><span class="toc-text">Austin消息中心</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E4%B8%AD%E5%BF%83%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-text">消息中心系统架构:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9D%97%EF%BC%9A"><span class="toc-text">后台管理模块：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88%EF%BC%9A"><span class="toc-text">技术栈：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%90%84%E4%B8%AA%E6%A8%A1%E5%9D%97%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-text">项目各个模块功能：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%94%A8%E5%88%B0%E7%9A%84%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%92%8C%E7%BB%84%E4%BB%B6%E5%BA%93"><span class="toc-text">项目中用到的工具类和组件库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E6%97%A5%E5%BF%97"><span class="toc-text">Java日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E4%B8%80%E6%9D%A1%E7%9F%AD%E4%BF%A1"><span class="toc-text">发送一条短信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E9%80%81%E5%B9%B3%E5%8F%B0%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">推送平台需要解决的问题</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By 小邹</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="/js/tw_cn.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.8/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="30" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://www.zoulifelogs.cn/categories/笔记1/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 小邹の笔记1 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://www.zoulifelogs.cn/categories/笔记2/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🎮 小邹の笔记2 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://www.zoulifelogs.cn/categories/笔记3/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🐱‍👓 小邹の笔记3 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://www.zoulifelogs.cn/categories/生活/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 小冰の生活 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><a class="magnet_link_more"  href="https://www.zoulifelogs.cn/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(50% - 5px);background: #f2f2f2;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: #69e8f2}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>
+  function butterfly_footer_beautify_injector_config(){
+    var parent_div_git = document.getElementById('footer-wrap');
+    var item_html = '<div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v6.2.0" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&amp;logo=hexo" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" data-title="主题版本Butterfly_v4.3.1" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&amp;logo=bitdefender" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" data-title="本站采用多线部署，主线路托管于Vercel" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-Vercel-brightgreen?style=flat&amp;logo=Vercel" alt=""/></a><a class="github-badge" target="_blank" href="https://dashboard.4everland.org/" style="margin-inline:5px" data-title="本站采用多线部署，备用线路托管于4EVERLAND" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Hosted-4EVERLAND-22DDDD?style=flat&amp;logo=IPFS" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&amp;logo=GitHub" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title=""><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&amp;logo=Claris" alt=""/></a></p>';
+    console.log('已挂载butterfly_footer_beautify')
+    parent_div_git.insertAdjacentHTML("beforeend",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_footer_beautify_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_footer_beautify_injector_config();
+  }
+  </script><script async src="https://www.fomal.cc/static/js/runtime.js"></script><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2024/06/25/2024-6-25-第二篇文章/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://source.fomal.cc/img/default_cover_6.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-06-25</span><a class="blog-slider__title" href="2024/06/25/2024-6-25-第二篇文章/" alt="">第二篇文章</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="2024/06/25/2024-6-25-第二篇文章/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2024/06/24/java后端-华为面经/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://source.fomal.cc/img/default_cover_7.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-06-24</span><a class="blog-slider__title" href="2024/06/24/java后端-华为面经/" alt="">华为面经</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="2024/06/24/java后端-华为面经/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2024/06/24/2024-6-24-第一篇文章/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://source.fomal.cc/img/default_cover_10.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2024-06-24</span><a class="blog-slider__title" href="2024/06/24/2024-6-24-第一篇文章/" alt="">第一篇文章</a><div class="blog-slider__text">再怎么看我也不知道怎么描述它的啦！</div><a class="blog-slider__button" href="2024/06/24/2024-6-24-第一篇文章/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body></html>
